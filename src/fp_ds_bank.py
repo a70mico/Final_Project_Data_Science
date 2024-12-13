@@ -46,6 +46,7 @@ from PIL import Image
 
 # Serialización del modelo ---------------------------------------------
 from joblib import dump
+from joblib import load
 
 # Streamlit ------------------------------------------------------------
 import streamlit as st
@@ -134,14 +135,15 @@ menu = st.sidebar.radio(
     "Selecciona una sección:",
     [
         "Inicio",
-        "El Rescate de las Campañas Perdidas",
-        "La misión del rescate",
-        "Desafíos abordados",
-        "Herramientas y metodologías",
-        "Hallazgos Clave",
-        "Análisis Exploratorio de Datos (EDA)",
-        "Resultados",
-        "Puesta en acción"
+        "1. El Rescate de las Campañas Perdidas",
+        "2. La misión del rescate",
+        "3. Desafíos abordados",
+        "4. Herramientas y metodologías",
+        "5. Hallazgos Clave",
+        "6. Análisis Exploratorio de Datos (EDA)",
+        "7. Resultados",
+        "8. Puesta en acción",
+        "9. Predicción"
     ]
 )
 
@@ -192,8 +194,8 @@ if menu == "Inicio":
     st.markdown("#### Haz clic en el menú lateral para explorar las secciones.")
 
 
-# Sección 1: El Rescate de las Campañas Perdidas -----------------------
-elif menu == "El Rescate de las Campañas Perdidas":
+# Sección 1: 1. El Rescate de las Campañas Perdidas -----------------------
+elif menu == "1. El Rescate de las Campañas Perdidas":
     st.title("1. El Rescate de las Campañas Perdidas")
     st.markdown("""
     ### El Problema
@@ -249,8 +251,8 @@ elif menu == "El Rescate de las Campañas Perdidas":
 
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
-# Sección 2: La Misión del Rescate -------------------------------------
-elif menu == "La misión del rescate":
+# Sección 2: 2. La Misión del Rescate -------------------------------------
+elif menu == "2. La misión del rescate":
     st.title("2. La Misión del Rescate")
 
     # Construir la ruta absoluta del archivo de imagen
@@ -283,8 +285,8 @@ elif menu == "La misión del rescate":
     
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
-# Sección 3: Desafíos abordados ----------------------------------------
-elif menu == "Desafíos abordados":
+# Sección 3: 3. Desafíos abordados ----------------------------------------
+elif menu == "3. Desafíos abordados":
     st.title("3. Desafíos abordados")
     st.markdown("""
     El análisis afrontó desafíos interesantes para procesar los datos, permitiendo
@@ -334,8 +336,8 @@ elif menu == "Desafíos abordados":
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
-# Sección 4: Herramientas y metodologías -------------------------------
-elif menu == "Herramientas y metodologías":
+# Sección 4: 4. Herramientas y metodologías -------------------------------
+elif menu == "4. Herramientas y metodologías":
     st.title("4. Herramientas y metodologías")
     st.markdown("Todo lo utilizado para el proyecto se describe a continuación:")
     # Crear columnas
@@ -382,8 +384,8 @@ elif menu == "Herramientas y metodologías":
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
-# Sección 5: Hallazgos Clave -------------------------------------------
-elif menu == "Hallazgos Clave":
+# Sección 5: 5. Hallazgos Clave -------------------------------------------
+elif menu == "5. Hallazgos Clave":
     st.title("5. Hallazgos Clave")
     st.markdown("""
     En este apartado explicaremos las características que tuvieron comportamientos a considerarse:  
@@ -616,8 +618,8 @@ elif menu == "Hallazgos Clave":
         st.plotly_chart(fig, use_container_width=True)
 
 
-# Sección 6: Análisis Exploratorio de Datos (EDA)-----------------------
-elif menu == "Análisis Exploratorio de Datos (EDA)":
+# Sección 6: 6. Análisis Exploratorio de Datos (EDA)-----------------------
+elif menu == "6. Análisis Exploratorio de Datos (EDA)":
     st.title("6. Análisis Exploratorio de Datos (EDA)")
     st.markdown("""
         Es fundamental realizar este análisis de nuestros datos    
@@ -720,8 +722,8 @@ elif menu == "Análisis Exploratorio de Datos (EDA)":
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
-# Sección 7: Resultados ------------------------------------------------
-elif menu == "Resultados":
+# Sección 7: 7. Resultados ------------------------------------------------
+elif menu == "7. Resultados":
     st.title("7. Resultados")
     st.markdown("""
         Entrenamos tres modelos de ML para elegir el que mejor rendimiento tiene:
@@ -818,8 +820,8 @@ elif menu == "Resultados":
         st.plotly_chart(line_fig, use_container_width=True)
 
 
-# Sección 8: Puesta en acción ------------------------------------------
-elif menu == "Puesta en acción":
+# Sección 8: 8. Puesta en acción ------------------------------------------
+elif menu == "8. Puesta en acción":
     st.title("8. Puesta en acción")
     
     # Crear columnas
@@ -847,6 +849,78 @@ elif menu == "Puesta en acción":
             st.image(img_resized, use_container_width=False)
         else:
             st.error(f"No se encontró la imagen en la ruta: {image_path}")
+    st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
+
+
+# Sección 9: 9. Predicción ------------------------------------------
+elif menu == "9. Predicción":
+    st.title("9. Predicción")
+
+    # Ruta del modelo guardado
+    model_path = os.path.join(BASE_DIR, "../models/bank_marketing_lgbm_model.joblib")
+
+    # Cargar el modelo
+    try:
+        model = load(model_path)
+        st.success("Modelo cargado exitosamente.")
+    except FileNotFoundError:
+        st.error("No se encontró el modelo guardado en la ruta especificada.")
+
+    # Crear un formulario para recolectar datos del usuario
+    st.markdown("### Introduce los datos del cliente:")
+    with st.form("prediction_form"):
+        age = st.number_input("Edad", min_value=18, max_value=95, step=1, value=35)
+        job = st.selectbox("Trabajo", ["blue-collar", "admin.", "entrepreneur", "housemaid", "management", "retired", "self-employed", "services", "student", "technician", "unemployed", "unknow"])
+        marital = st.selectbox("Estado civil", ["married", "single", "divorced"])
+        education = st.selectbox("Educación?", ["primary", "secondary", "tertiary", "unknow"])
+        default = st.selectbox("¿Tiene crédito en mora?", ["yes", "no"])
+        housing = st.selectbox("¿Tiene hipoteca?", ["yes", "no"])
+        loan = st.selectbox("¿Tiene préstamo personal?", ["yes", "no"])
+        contact = st.selectbox("¿Tipo de contacto?", ["celullar", "telephone", "unknow"])
+        day = st.number_input("¿Qué día lo contactaron?", step=1, value=1)
+        duration = st.number_input("¿Tiempo de la llamada (segundos)?", step=0, value=3600)
+        poutcome = st.selectbox("Resultado de la campaña previa", ["success", "failure", "other", "unknown"])
+        balance = st.number_input("Balance", min_value=-1800, max_value=3000, step=1, value=0)
+        campaign = st.selectbox("Número de Campañas", ["0", "1", "2", "3"])
+        quarter = st.selectbox("Trimestre contactado (Trimestre 1: 0, Trimestre 2: 1, Trimestre 3: 2, Trimestre 4: 3)", ["0", "1", "2", "3"])
+        pdays = st.selectbox("¿Se lo contacto antes? (0: No, 1: Si)", ["0", "1"])        
+        
+        
+        # Botón para realizar la predicción
+        submitted = st.form_submit_button("Hacer Predicción")
+
+    if submitted:
+        # Crear un DataFrame con los datos ingresados
+        input_data = pd.DataFrame({
+            "age": [age],
+            "balance": [balance],
+            "campaign": [campaign],
+            "pdays": [pdays],
+            "previous": [previous],
+            "housing": [1 if housing == "yes" else 0],
+            "loan": [1 if loan == "yes" else 0],
+            "poutcome": [poutcome],
+        })
+
+        # Verificar si el modelo está cargado
+        if 'model' in locals():
+            # Hacer predicción
+            prediction = model.predict(input_data)
+            prediction_prob = model.predict_proba(input_data)
+
+            # Mostrar el resultado
+            if prediction[0] == 1:
+                st.success(f"El modelo predice que el cliente **ACEPTARÁ** la oferta.")
+            else:
+                st.info(f"El modelo predice que el cliente **NO ACEPTARÁ** la oferta.")
+            
+            st.markdown(f"### Probabilidades:")
+            st.write(f"- No Aceptará: {prediction_prob[0][0]:.2f}")
+            st.write(f"- Aceptará: {prediction_prob[0][1]:.2f}")
+        else:
+            st.error("El modelo no está cargado. Verifica el archivo del modelo.")
+
+    
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
