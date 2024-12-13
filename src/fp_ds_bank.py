@@ -145,12 +145,9 @@ menu = st.sidebar.radio(
     ]
 )
 
-# Sección: Inicio
+# Sección: Inicio ------------------------------------------------------
 if menu == "Inicio":
-    st.title("🚀 El Rescate de las Campañas Perdidas")
-    st.markdown("""
-    # Inicio
-    """)
+    st.title(" Inicio")
 
     # Construir la ruta absoluta del archivo de imagen
     image_inicio = os.path.join(BASE_DIR, "../streamlit/inicio.png")
@@ -195,7 +192,7 @@ if menu == "Inicio":
     st.markdown("#### Haz clic en el menú lateral para explorar las secciones.")
 
 
-# Sección 1: El Rescate de las Campañas Perdidas
+# Sección 1: El Rescate de las Campañas Perdidas -----------------------
 elif menu == "El Rescate de las Campañas Perdidas":
     st.title("1. El Rescate de las Campañas Perdidas")
     st.markdown("""
@@ -252,7 +249,7 @@ elif menu == "El Rescate de las Campañas Perdidas":
 
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
-# Sección 2: La Misión del Rescate
+# Sección 2: La Misión del Rescate -------------------------------------
 elif menu == "La misión del rescate":
     st.title("2. La Misión del Rescate")
 
@@ -286,7 +283,7 @@ elif menu == "La misión del rescate":
     
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
-# Sección 3: Desafíos abordados
+# Sección 3: Desafíos abordados ----------------------------------------
 elif menu == "Desafíos abordados":
     st.title("3. Desafíos abordados")
     st.markdown("""
@@ -337,7 +334,7 @@ elif menu == "Desafíos abordados":
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
-# Sección 4: Herramientas y metodologías
+# Sección 4: Herramientas y metodologías -------------------------------
 elif menu == "Herramientas y metodologías":
     st.title("4. Herramientas y metodologías")
     st.markdown("Todo lo utilizado para el proyecto se describe a continuación:")
@@ -385,7 +382,7 @@ elif menu == "Herramientas y metodologías":
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
-# Sección 5: Hallazgos Clave
+# Sección 5: Hallazgos Clave -------------------------------------------
 elif menu == "Hallazgos Clave":
     st.title("5. Hallazgos Clave")
     st.markdown("""
@@ -619,7 +616,7 @@ elif menu == "Hallazgos Clave":
         st.plotly_chart(fig, use_container_width=True)
 
 
-# Sección 6: Análisis Exploratorio de Datos (EDA)
+# Sección 6: Análisis Exploratorio de Datos (EDA)-----------------------
 elif menu == "Análisis Exploratorio de Datos (EDA)":
     st.title("6. Análisis Exploratorio de Datos (EDA)")
     st.markdown("""
@@ -723,7 +720,7 @@ elif menu == "Análisis Exploratorio de Datos (EDA)":
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
-# Sección 7: Resultados
+# Sección 7: Resultados ------------------------------------------------
 elif menu == "Resultados":
     st.title("7. Resultados")
     st.markdown("""
@@ -789,7 +786,8 @@ elif menu == "Resultados":
     with col1:
         # Mostrar texto debajo de la gráfica
         st.markdown("""
-            El modelo de clasificación predice con 86% de precisión si un cliente aceptará hacer el depósito a plazo fijo.
+            El modelo de clasificación predice con 86% de precisión si
+            un cliente aceptará hacer el depósito a plazo fijo.
         """)
     
     with col2:
@@ -813,14 +811,14 @@ elif menu == "Resultados":
             xaxis_title="Modelo",
             yaxis_title="Puntaje",
             legend_title="Métricas",
-            margin=dict(l=0, r=0, t=50, b=10),  # Ajustar márgenes del gráfico
+            margin=dict(l=0, r=0, t=50, b=10),  # Ajustar márgenes
         )
 
         # Mostrar el gráfico en Streamlit
         st.plotly_chart(line_fig, use_container_width=True)
 
 
-# Sección 8: Puesta en acción
+# Sección 8: Puesta en acción ------------------------------------------
 elif menu == "Puesta en acción":
     st.title("8. Puesta en acción")
     
