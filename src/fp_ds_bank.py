@@ -316,11 +316,11 @@ elif menu == "3. Desafíos abordados":
         st.markdown("")
         st.markdown("")
         st.markdown("")
-        st.markdown("#### Info dataset limpiol")
+        st.markdown("#### Info dataset limpio")
         st.markdown("""
             - Dataset Original:
-            - Registros: 45,211
-            - Variables: 16 características
+            - Registros: 44,724
+            - Variables: 15 características
             - Meta: 1 objetivo a predecir (y)
         """)
 
@@ -477,7 +477,7 @@ elif menu == "5. Hallazgos Clave":
         st.markdown("")
         st.markdown("")
         st.markdown("#### **Balance**")
-        st.markdown(""""
+        st.markdown("""
             Presentaba una distribución sesgada con outliers
             extremos, lo que dificultaba el modelado. Aplicamos 
             la transformación Yeo-Johnson para normalizar los datos.
@@ -881,38 +881,120 @@ elif menu == "9. Predicción":
         duration = st.number_input("¿Tiempo de la llamada (segundos)?", step=0, value=3600)
         poutcome = st.selectbox("Resultado de la campaña previa", ["success", "failure", "other", "unknown"])
         balance = st.number_input("Balance", min_value=-1800, max_value=3000, step=1, value=0)
-        campaign = st.selectbox("Número de Campañas", ["0", "1", "2", "3"])
-        quarter = st.selectbox("Trimestre contactado (Trimestre 1: 0, Trimestre 2: 1, Trimestre 3: 2, Trimestre 4: 3)", ["0", "1", "2", "3"])
-        pdays = st.selectbox("¿Se lo contacto antes? (0: No, 1: Si)", ["0", "1"])        
+        campaign = st.number_input("Número de contactos durante la campaña", min_value=0, max_value=60, step=1, value=0)
+        quarter = st.selectbox("Trimestre contactado", ["Q1", "Q2", "Q3", "Q4"])
+        pdays = st.selectbox("¿Se lo contacto antes?", [0, 1])
         
         
         # Botón para realizar la predicción
         submitted = st.form_submit_button("Hacer Predicción")
 
+    def preprocess_input_data(data):
+        processed_data = pd.DataFrame()
+
+        # Codificar 'job' (One-Hot Encoding manual)
+        job_categories = ['admin.', 'blue-collar', 'entrepreneur', 'housemaid', 'management', 
+                        'retired', 'self-employed', 'services', 'student', 'technician', 
+                        'unemployed', 'unknown']
+        for job in job_categories:
+            processed_data[f'cat__job_{job}'] = (data['job'] == job).astype(int)
+
+        # Codificar 'marital'
+        marital_categories = ['divorced', 'married', 'single']
+        for marital in marital_categories:
+            processed_data[f'cat__marital_{marital}'] = (data['marital'] == marital).astype(int)
+
+        # Codificar 'education'
+        education_categories = ['primary', 'secondary', 'tertiary', 'unknown']
+        for education in education_categories:
+            processed_data[f'cat__education_{education}'] = (data['education'] == education).astype(int)
+
+        # Codificar 'default'
+        processed_data['cat__default_no'] = (data['default'] == 'no').astype(int)
+        processed_data['cat__default_yes'] = (data['default'] == 'yes').astype(int)
+
+        # Codificar 'housing'
+        processed_data['cat__housing_no'] = (data['housing'] == 'no').astype(int)
+        processed_data['cat__housing_yes'] = (data['housing'] == 'yes').astype(int)
+
+        # Codificar 'loan'
+        processed_data['cat__loan_no'] = (data['loan'] == 'no').astype(int)
+        processed_data['cat__loan_yes'] = (data['loan'] == 'yes').astype(int)
+
+        # Codificar 'contact'
+        contact_categories = ['cellular', 'telephone', 'unknown']
+        for contact in contact_categories:
+            processed_data[f'cat__contact_{contact}'] = (data['contact'] == contact).astype(int)
+
+        # Codificar 'poutcome'
+        poutcome_categories = ['failure', 'other', 'success', 'unknown']
+        for poutcome in poutcome_categories:
+            processed_data[f'cat__poutcome_{poutcome}'] = (data['poutcome'] == poutcome).astype(int)
+
+        # Codificar 'quarter'
+        quarter_categories = ['Q1', 'Q2', 'Q3', 'Q4']
+        for quarter in quarter_categories:
+            processed_data[f'cat__quarter_{quarter}'] = (data['quarter'] == quarter).astype(int)
+
+        # Variables numéricas restantes
+        processed_data['remainder__age'] = data['age']
+        processed_data['remainder__day'] = data['day']
+        processed_data['remainder__duration'] = data['duration']
+        processed_data['remainder__balance_yeojohnson'] = data['balance_yeojohnson']
+        processed_data['remainder__campaign_log'] = np.log1p(data['campaign_log'])
+        processed_data['remainder__pdays_tran'] = data['pdays_tran']
+
+        # Codificar 'pdays'
+        # processed_data['remainder__pdays_tran'] = data['pdays_tran'].apply(lambda x: 0 if x == 'no' else 1).astype(int)
+
+        return processed_data
+
+
     if submitted:
         # Crear un DataFrame con los datos ingresados
         input_data = pd.DataFrame({
             "age": [age],
-            "balance": [balance],
-            "campaign": [campaign],
-            "pdays": [pdays],
-            "previous": [previous],
-            "housing": [1 if housing == "yes" else 0],
-            "loan": [1 if loan == "yes" else 0],
+            "job": [job],
+            "marital": [marital],
+            "education": [education],
+            "default": [default],
+            "housing": [housing],
+            "loan": [loan],
+            "contact": [contact],
+            "day": [day],
+            "duration": [duration],
             "poutcome": [poutcome],
+            "balance_yeojohnson": [balance],
+            "campaign_log": [campaign],
+            "quarter": [quarter],
+            "pdays_tran": [pdays]
         })
+
+        # Procesar los datos
+        processed_data = preprocess_input_data(input_data)
+
+        # Verificar si las características coinciden
+        expected_features = model.booster_.feature_name()  # Obtiene las características esperadas por el modelo
+        missing_features = [col for col in expected_features if col not in processed_data.columns]
+
+        # Agregar columnas faltantes con valor 0
+        for col in missing_features:
+            processed_data[col] = 0
+
+        # Reordenar las columnas para que coincidan con el modelo
+        processed_data = processed_data[expected_features]
 
         # Verificar si el modelo está cargado
         if 'model' in locals():
             # Hacer predicción
-            prediction = model.predict(input_data)
-            prediction_prob = model.predict_proba(input_data)
+            prediction = model.predict(processed_data)
+            prediction_prob = model.predict_proba(processed_data)
 
             # Mostrar el resultado
             if prediction[0] == 1:
-                st.success(f"El modelo predice que el cliente **ACEPTARÁ** la oferta.")
+                st.success(f"El modelo predice que el cliente **REALIZARA EL DEPOSITO A PLAZO** la oferta.")
             else:
-                st.info(f"El modelo predice que el cliente **NO ACEPTARÁ** la oferta.")
+                st.info(f"El modelo predice que el cliente **NO REALIZARA EL DEPOSITO A PLAZO** la oferta.")
             
             st.markdown(f"### Probabilidades:")
             st.write(f"- No Aceptará: {prediction_prob[0][0]:.2f}")
@@ -922,5 +1004,3 @@ elif menu == "9. Predicción":
 
     
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
-
-
