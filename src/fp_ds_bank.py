@@ -64,7 +64,7 @@ st.markdown("""
 """)
 
 # Imagen principal
-st.image("../streamlit/caratula.png", use_container_width=True, caption="Decisiones basadas en evidencias, impulsadas por datos.")
+st.image("streamlit/caratula.png", use_container_width=True, caption="Decisiones basadas en evidencias, impulsadas por datos.")
 
 # Subtítulo motivacional
 st.markdown("""
