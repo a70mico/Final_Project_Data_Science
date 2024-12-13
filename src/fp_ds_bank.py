@@ -868,139 +868,185 @@ elif menu == "9. Predicción":
 
     # Crear un formulario para recolectar datos del usuario
     st.markdown("### Introduce los datos del cliente:")
-    with st.form("prediction_form"):
-        age = st.number_input("Edad", min_value=18, max_value=95, step=1, value=35)
-        job = st.selectbox("Trabajo", ["blue-collar", "admin.", "entrepreneur", "housemaid", "management", "retired", "self-employed", "services", "student", "technician", "unemployed", "unknow"])
-        marital = st.selectbox("Estado civil", ["married", "single", "divorced"])
-        education = st.selectbox("Educación?", ["primary", "secondary", "tertiary", "unknow"])
-        default = st.selectbox("¿Tiene crédito en mora?", ["yes", "no"])
-        housing = st.selectbox("¿Tiene hipoteca?", ["yes", "no"])
-        loan = st.selectbox("¿Tiene préstamo personal?", ["yes", "no"])
-        contact = st.selectbox("¿Tipo de contacto?", ["celullar", "telephone", "unknow"])
-        day = st.number_input("¿Qué día lo contactaron?", step=1, value=1)
-        duration = st.number_input("¿Tiempo de la llamada (segundos)?", step=0, value=3600)
-        poutcome = st.selectbox("Resultado de la campaña previa", ["success", "failure", "other", "unknown"])
-        balance = st.number_input("Balance", min_value=-1800, max_value=3000, step=1, value=0)
-        campaign = st.number_input("Número de contactos durante la campaña", min_value=0, max_value=60, step=1, value=0)
-        quarter = st.selectbox("Trimestre contactado", ["Q1", "Q2", "Q3", "Q4"])
-        pdays = st.selectbox("¿Se lo contacto antes?", [0, 1])
-        
-        
-        # Botón para realizar la predicción
-        submitted = st.form_submit_button("Hacer Predicción")
+    
+    # Crear columnas
+    col1, col2 = st.columns([1, 2])
 
-    def preprocess_input_data(data):
-        processed_data = pd.DataFrame()
-
-        # Codificar 'job' (One-Hot Encoding manual)
-        job_categories = ['admin.', 'blue-collar', 'entrepreneur', 'housemaid', 'management', 
-                        'retired', 'self-employed', 'services', 'student', 'technician', 
-                        'unemployed', 'unknown']
-        for job in job_categories:
-            processed_data[f'cat__job_{job}'] = (data['job'] == job).astype(int)
-
-        # Codificar 'marital'
-        marital_categories = ['divorced', 'married', 'single']
-        for marital in marital_categories:
-            processed_data[f'cat__marital_{marital}'] = (data['marital'] == marital).astype(int)
-
-        # Codificar 'education'
-        education_categories = ['primary', 'secondary', 'tertiary', 'unknown']
-        for education in education_categories:
-            processed_data[f'cat__education_{education}'] = (data['education'] == education).astype(int)
-
-        # Codificar 'default'
-        processed_data['cat__default_no'] = (data['default'] == 'no').astype(int)
-        processed_data['cat__default_yes'] = (data['default'] == 'yes').astype(int)
-
-        # Codificar 'housing'
-        processed_data['cat__housing_no'] = (data['housing'] == 'no').astype(int)
-        processed_data['cat__housing_yes'] = (data['housing'] == 'yes').astype(int)
-
-        # Codificar 'loan'
-        processed_data['cat__loan_no'] = (data['loan'] == 'no').astype(int)
-        processed_data['cat__loan_yes'] = (data['loan'] == 'yes').astype(int)
-
-        # Codificar 'contact'
-        contact_categories = ['cellular', 'telephone', 'unknown']
-        for contact in contact_categories:
-            processed_data[f'cat__contact_{contact}'] = (data['contact'] == contact).astype(int)
-
-        # Codificar 'poutcome'
-        poutcome_categories = ['failure', 'other', 'success', 'unknown']
-        for poutcome in poutcome_categories:
-            processed_data[f'cat__poutcome_{poutcome}'] = (data['poutcome'] == poutcome).astype(int)
-
-        # Codificar 'quarter'
-        quarter_categories = ['Q1', 'Q2', 'Q3', 'Q4']
-        for quarter in quarter_categories:
-            processed_data[f'cat__quarter_{quarter}'] = (data['quarter'] == quarter).astype(int)
-
-        # Variables numéricas restantes
-        processed_data['remainder__age'] = data['age']
-        processed_data['remainder__day'] = data['day']
-        processed_data['remainder__duration'] = data['duration']
-        processed_data['remainder__balance_yeojohnson'] = data['balance_yeojohnson']
-        processed_data['remainder__campaign_log'] = np.log1p(data['campaign_log'])
-        processed_data['remainder__pdays_tran'] = data['pdays_tran']
-
-        # Codificar 'pdays'
-        # processed_data['remainder__pdays_tran'] = data['pdays_tran'].apply(lambda x: 0 if x == 'no' else 1).astype(int)
-
-        return processed_data
-
-
-    if submitted:
-        # Crear un DataFrame con los datos ingresados
-        input_data = pd.DataFrame({
-            "age": [age],
-            "job": [job],
-            "marital": [marital],
-            "education": [education],
-            "default": [default],
-            "housing": [housing],
-            "loan": [loan],
-            "contact": [contact],
-            "day": [day],
-            "duration": [duration],
-            "poutcome": [poutcome],
-            "balance_yeojohnson": [balance],
-            "campaign_log": [campaign],
-            "quarter": [quarter],
-            "pdays_tran": [pdays]
-        })
-
-        # Procesar los datos
-        processed_data = preprocess_input_data(input_data)
-
-        # Verificar si las características coinciden
-        expected_features = model.booster_.feature_name()  # Obtiene las características esperadas por el modelo
-        missing_features = [col for col in expected_features if col not in processed_data.columns]
-
-        # Agregar columnas faltantes con valor 0
-        for col in missing_features:
-            processed_data[col] = 0
-
-        # Reordenar las columnas para que coincidan con el modelo
-        processed_data = processed_data[expected_features]
-
-        # Verificar si el modelo está cargado
-        if 'model' in locals():
-            # Hacer predicción
-            prediction = model.predict(processed_data)
-            prediction_prob = model.predict_proba(processed_data)
-
-            # Mostrar el resultado
-            if prediction[0] == 1:
-                st.success(f"El modelo predice que el cliente **REALIZARA EL DEPOSITO A PLAZO** la oferta.")
-            else:
-                st.info(f"El modelo predice que el cliente **NO REALIZARA EL DEPOSITO A PLAZO** la oferta.")
+    with col1:
+        with st.form("prediction_form"):
+            age = st.number_input("Edad", min_value=18, max_value=95, step=1, value=20)
+            job = st.selectbox("Trabajo", ["blue-collar", "admin.", "entrepreneur", "housemaid", "management", "retired", "self-employed", "services", "student", "technician", "unemployed", "unknow"])
+            marital = st.selectbox("Estado civil", ["married", "single", "divorced"])
+            education = st.selectbox("Educación?", ["primary", "secondary", "tertiary", "unknow"])
+            default = st.selectbox("¿Tiene crédito en mora?", ["yes", "no"])
+            housing = st.selectbox("¿Tiene hipoteca?", ["yes", "no"])
+            loan = st.selectbox("¿Tiene préstamo personal?", ["yes", "no"])
+            contact = st.selectbox("¿Tipo de contacto?", ["celullar", "telephone", "unknow"])
+            day = st.number_input("¿Qué día lo contactaron?", step=1, value=1)
+            duration = st.number_input("¿Tiempo de la llamada (segundos)?", step=0, value=3600)
+            poutcome = st.selectbox("Resultado de la campaña previa", ["success", "failure", "other", "unknown"])
+            balance = st.number_input("Balance", min_value=0, max_value=3000, step=1, value=0)
+            campaign = st.number_input("Número de contactos durante la campaña", min_value=0, max_value=60, step=1, value=0)
+            quarter = st.selectbox("Trimestre contactado", ["Q1", "Q2", "Q3", "Q4"])
+            pdays = st.selectbox("¿Se lo contacto antes?", ["no", "yes"])
             
-            st.markdown(f"### Probabilidades:")
-            st.write(f"- No Aceptará: {prediction_prob[0][0]:.2f}")
-            st.write(f"- Aceptará: {prediction_prob[0][1]:.2f}")
+            
+            # Botón para realizar la predicción
+            submitted = st.form_submit_button("Hacer Predicción")
+
+        def preprocess_input_data(data):
+            processed_data = pd.DataFrame()
+
+            # Codificar 'job' (One-Hot Encoding manual)
+            job_categories = ['admin.', 'blue-collar', 'entrepreneur', 'housemaid', 'management', 
+                            'retired', 'self-employed', 'services', 'student', 'technician', 
+                            'unemployed', 'unknown']
+            for job in job_categories:
+                processed_data[f'cat__job_{job}'] = (data['job'] == job).astype(int)
+
+            # Codificar 'marital'
+            marital_categories = ['divorced', 'married', 'single']
+            for marital in marital_categories:
+                processed_data[f'cat__marital_{marital}'] = (data['marital'] == marital).astype(int)
+
+            # Codificar 'education'
+            education_categories = ['primary', 'secondary', 'tertiary', 'unknown']
+            for education in education_categories:
+                processed_data[f'cat__education_{education}'] = (data['education'] == education).astype(int)
+
+            # Codificar 'default'
+            processed_data['cat__default_no'] = (data['default'] == 'no').astype(int)
+            processed_data['cat__default_yes'] = (data['default'] == 'yes').astype(int)
+
+            # Codificar 'housing'
+            processed_data['cat__housing_no'] = (data['housing'] == 'no').astype(int)
+            processed_data['cat__housing_yes'] = (data['housing'] == 'yes').astype(int)
+
+            # Codificar 'loan'
+            processed_data['cat__loan_no'] = (data['loan'] == 'no').astype(int)
+            processed_data['cat__loan_yes'] = (data['loan'] == 'yes').astype(int)
+
+            # Codificar 'contact'
+            contact_categories = ['cellular', 'telephone', 'unknown']
+            for contact in contact_categories:
+                processed_data[f'cat__contact_{contact}'] = (data['contact'] == contact).astype(int)
+
+            # Codificar 'poutcome'
+            poutcome_categories = ['failure', 'other', 'success', 'unknown']
+            for poutcome in poutcome_categories:
+                processed_data[f'cat__poutcome_{poutcome}'] = (data['poutcome'] == poutcome).astype(int)
+
+            # Codificar 'quarter'
+            quarter_categories = ['Q1', 'Q2', 'Q3', 'Q4']
+            for quarter in quarter_categories:
+                processed_data[f'cat__quarter_{quarter}'] = (data['quarter'] == quarter).astype(int)
+
+            # Variables numéricas restantes
+            processed_data['remainder__age'] = data['age']
+            processed_data['remainder__day'] = data['day']
+            processed_data['remainder__duration'] = data['duration']
+            processed_data['remainder__balance_yeojohnson'] = data['balance_yeojohnson'] * -1
+            processed_data['remainder__campaign_log'] = np.log1p(data['campaign_log'])
+
+            # Codificar 'pdays'
+            processed_data['remainder__pdays_tran'] = data['pdays_tran'].apply(lambda x: 0 if x == 'no' else 1).astype(int)
+
+            return processed_data
+
+
+        if submitted:
+            # Crear un DataFrame con los datos ingresados
+            input_data = pd.DataFrame({
+                "age": [age],
+                "job": [job],
+                "marital": [marital],
+                "education": [education],
+                "default": [default],
+                "housing": [housing],
+                "loan": [loan],
+                "contact": [contact],
+                "day": [day],
+                "duration": [duration],
+                "poutcome": [poutcome],
+                "balance_yeojohnson": [balance],
+                "campaign_log": [campaign],
+                "quarter": [quarter],
+                "pdays_tran": [pdays]
+            })
+
+            # Procesar los datos
+            processed_data = preprocess_input_data(input_data)
+
+            # Verificar si las características coinciden
+            expected_features = model.booster_.feature_name()  # Obtiene las características esperadas por el modelo
+            missing_features = [col for col in expected_features if col not in processed_data.columns]
+
+            # Agregar columnas faltantes con valor 0
+            for col in missing_features:
+                processed_data[col] = 0
+
+            # Reordenar las columnas para que coincidan con el modelo
+            processed_data = processed_data[expected_features]
+
+            # Verificar si el modelo está cargado
+            if 'model' in locals():
+                # Hacer predicción
+                prediction = model.predict(processed_data)
+                prediction_prob = model.predict_proba(processed_data)
+
+                # Mostrar el resultado
+                if prediction[0] == 1:
+                    st.success(f"El modelo predice que el cliente **REALIZARA EL DEPOSITO A PLAZO**.")
+                else:
+                    st.info(f"El modelo predice que el cliente **NO REALIZARA EL DEPOSITO A PLAZO**.")
+
+            else:
+                st.error("El modelo no está cargado. Verifica el archivo del modelo.")
+        
+    with col2:
+        st.markdown("""
+            ### **Conclusiones**
+            - Integrar el modelo predictivo en el sistema de gestión de 
+                    campañas para priorizar a los clientes más propensos.
+            - Identificar qué clientes son más propensos a aceptar un depósito
+                    a plazo fijo permitió un uso más eficiente de los recursos del banco.
+            - Extender la solución a otros productos financieros como tarjetas de 
+                    crédito o préstamos personales.            
+        """)
+        st.markdown("")
+        st.markdown("")
+        st.markdown("""
+            *Este proyecto demostró cómo la combinación de ciencia de datos y Machine
+                     Learning puede transformar un problema tradicionalmente ineficiente 
+                    en una solución moderna y escalable. Con este enfoque, el banco no 
+                    solo optimiza sus recursos, sino que también posiciona al cliente
+                     en el centro de sus decisiones.*s
+        """)
+        st.markdown("")
+        st.markdown("")
+        st.markdown("")
+        st.markdown("")
+
+        st.markdown("**Para descargar el modelo precione el botón**")
+        # Ruta al modelo guardado
+        model_path = os.path.join(BASE_DIR, "../models/bank_marketing_lgbm_model.joblib")
+
+        # Verificar si el archivo existe
+        if os.path.exists(model_path):
+            # Leer el archivo del modelo en modo binario
+            with open(model_path, "rb") as model_file:
+                model_data = model_file.read()
+            
+            # Botón de descarga
+            st.download_button(
+                label="📥 Descargar Modelo LightGBM",
+                data=model_data,
+                file_name="bank_marketing_lgbm_model.joblib",
+                mime="application/octet-stream"
+            )
         else:
-            st.error("El modelo no está cargado. Verifica el archivo del modelo.")
+            st.error("El archivo del modelo no se encontró en la ruta especificada.")
+
 
     
     st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")

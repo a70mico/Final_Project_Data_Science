@@ -1,6 +1,68 @@
-# Plantilla de Proyecto de Ciencia de Datos
+# 🏦 Marketing Bancario Inteligente: Predicción de Suscripciones a Depósitos a Plazo
 
-Esta plantilla está diseñada para impulsar proyectos de ciencia de datos proporcionando una configuración básica para conexiones de base de datos, procesamiento de datos, y desarrollo de modelos de aprendizaje automático. Incluye una organización estructurada de carpetas para tus conjuntos de datos y un conjunto de paquetes de Python predefinidos necesarios para la mayoría de las tareas de ciencia de datos.
+### **Proyecto Final - Bootcamp Data Science | 4Geeks Academy**
+
+---
+
+## 🌟 **Descripción del Proyecto**
+Este proyecto tiene como objetivo optimizar las campañas de marketing bancario mediante la predicción de qué clientes son más propensos a aceptar un depósito a plazo fijo. Utilizamos técnicas avanzadas de Machine Learning y análisis de datos para mejorar la eficiencia, reducir costos y personalizar la experiencia del cliente.
+
+---
+
+## 🛠️ **Herramientas y Tecnologías**
+- **Lenguaje:** Python
+- **Frameworks y Librerías:**
+  - Pandas, NumPy, Scikit-learn, LightGBM, XGBoost, Matplotlib, Seaborn, Plotly, Streamlit
+- **Infraestructura:**
+  - Jupyter Notebook para desarrollo
+  - Streamlit para visualización interactiva
+
+---
+
+## 🧪 **Proceso de Desarrollo**
+1. **Exploración y Análisis de Datos (EDA):**
+   - Análisis descriptivo y gráfico de las variables.
+   - Identificación de patrones y relaciones clave.
+   
+2. **Preprocesamiento de Datos:**
+   - Transformaciones como Yeo-Johnson para normalizar variables.
+   - Agrupación de categorías y eliminación de outliers.
+   - Creación de variables derivadas, como trimestres y campañas previas.
+
+3. **Modelos Predictivos:**
+   - Entrenamiento de tres modelos principales:
+     - **Random Forest**
+     - **XGBoost**
+     - **LightGBM** (modelo final seleccionado)
+   - Evaluación basada en métricas como *recall* y *f1-score* debido al desbalanceo del dataset.
+
+4. **Resultados:**
+   - El modelo LightGBM alcanzó un **recall del 86%**, lo que significa que identifica correctamente a la mayoría de los clientes propensos a aceptar la oferta.
+
+5. **Implementación Interactiva:**
+   - Despliegue de una aplicación interactiva con Streamlit para simular predicciones basadas en inputs del usuario.
+
+---
+
+## 📊 **Resultados Clave**
+- **Optimización de Recursos:**
+  - El modelo permite enfocar las campañas en clientes más propensos, reduciendo costos y mejorando la tasa de conversión.
+- **Incremento Proyectado:**
+  - Un posible aumento del 20% en la efectividad de las campañas.
+- **Beneficios para el Cliente:**
+  - Interacciones personalizadas y menos intrusivas.
+
+---
+
+## 🖥️ **Cómo Usar el Proyecto**
+
+### **1. Requisitos Previos**
+- Instalar Python 3.8 o superior.
+- Clonar este repositorio:
+  ```bash
+  git clone https://github.com/rodri-iot/Final_Project_Data_Science.git
+  cd Final_Project_Data_Science
+
 
 ## Estructura
 
@@ -75,14 +137,26 @@ class ExampleModel(Base):
 
 ```
 
-## Trabajando con Datos
+## Ejecutar la Aplicación
 
-Puedes colocar tus conjuntos de datos brutos en el directorio data/raw, conjuntos de datos intermedios en data/interim, y los conjuntos de datos procesados listos para el análisis en data/processed.
+```bash
+  streamlit run src/fp_ds_bank.py
+```
 
-Para procesar datos, puedes modificar el script app.py para incluir tus pasos de procesamiento de datos, utilizando pandas para la manipulación y análisis de datos.
+## 📥 Descargar el Modelo
 
-## Contribuyentes
+Puedes descargar el modelo entrenado para tus experimentos: [Descargar Modelo LightGBM](https://github.com/rodri-iot/Final_Project_Data_Science/blob/main/models/bank_marketing_lgbm_model.joblib)
 
-Esta plantilla fue construida como parte del [Data Science and Machine Learning Bootcamp](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuyentes. Descubre más sobre [los programas BootCamp de 4Geeks Academy](https://4geeksacademy.com/us/programs) aquí.
+## 🎯 Próximos Pasos
 
-Otras plantillas y recursos como este se pueden encontrar en la página de GitHub de la escuela.
+- Ampliar el modelo para otros productos financieros, como préstamos o tarjetas de crédito.
+- Mejorar la personalización utilizando datos adicionales, como historial de transacciones.
+- Desplegar el modelo en un entorno de producción para campañas en tiempo real.
+
+## Colaboradores
+
+- Rodrigo Pinedo
+- Alejandro Diaz
+- **Mentores:** 4Geeks Academy
+  - Esta plantilla fue construida como parte del [Data Science and Machine Learning Bootcamp](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuyentes. Descubre más sobre [los programas BootCamp de 4Geeks Academy](https://4geeksacademy.com/us/programs) aquí.
+  - Otras plantillas y recursos como este se pueden encontrar en la página de GitHub de la escuela.
