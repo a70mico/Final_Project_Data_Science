@@ -621,27 +621,106 @@ elif menu == "Hallazgos Clave":
 
 # Sección 6: Análisis Exploratorio de Datos (EDA)
 elif menu == "Análisis Exploratorio de Datos (EDA)":
-    st.title("Análisis Exploratorio de Datos (EDA)")
+    st.title("6. Análisis Exploratorio de Datos (EDA)")
     st.markdown("""
-    Nuestro objetivo es transformar campañas ineficientes en estrategias optimizadas usando Ciencia de Datos:
-    1. Identificar patrones clave en los datos.
-    2. Segmentar clientes según su probabilidad de aceptación.
-    3. Maximizar la tasa de éxito y reducir el costo.
+        Es fundamental realizar este análisis de nuestros datos    
     """)
-    # Obtener la ruta absoluta del directorio donde está el script
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    st.markdown("")
+    st.markdown("### **Info**")
+    # Obtener la información de las columnas
+    info_data = {
+        "Columna": df_train.columns,
+        "No. Valores No Nulos": df_train.notnull().sum().values,
+        "Tipo de Dato": df_train.dtypes.values
+    }
 
+    # Crear el DataFrame
+    info_df = pd.DataFrame(info_data)
+
+    # Mostrar la tabla en Streamlit
+    st.dataframe(info_df)
+
+    st.markdown("")
+    st.markdown("### **Describe**")
+    
+    # Mostrar estadísticas de variables numéricas
+    numeric_stats = df_train.describe(include='number').T  # Transponer para formato tabular
+    st.markdown("### Estadísticas Descriptivas de Variables Numéricas")
+    st.dataframe(numeric_stats)
+
+    # Mostrar estadísticas de variables categóricas
+    category_stats = df_train.describe(include='object').T  # Transponer para formato tabular
+    st.markdown("### Estadísticas Descriptivas de Variables Categóricas")
+    st.dataframe(category_stats)
+
+    st.markdown("")
+    st.markdown("### **Análisis Univariado** *(numéricas)*")
     # Construir la ruta absoluta del archivo de imagen
-    img_3_0 = os.path.join(BASE_DIR, "../streamlit/inicio.png")
+    img_6_0 = os.path.join(BASE_DIR, "../streamlit/s_6_0.png")
 
     # Imagen principal
     if os.path.exists(image_path):
-        img = Image.open(img_3_0)
-        img_resized = img.resize((256, 256))  # Redimensionar a 256x256
-        st.image(img_resized, use_container_width=False, caption="Decisiones basadas en evidencias, impulsadas por datos.")
+        img = Image.open(img_6_0)
+        img_resized = img.resize((1000, 1000))  # Redimensionar a 1000x1000
+        st.image(img_resized, use_container_width=False)
     else:
         st.error(f"No se encontró la imagen en la ruta: {image_path}")
+
+    st.markdown("")
+    st.markdown("### **Análisis Univariado** *(categoricas)*")
+    # Construir la ruta absoluta del archivo de imagen
+    img_6_1 = os.path.join(BASE_DIR, "../streamlit/s_6_1.png")
+
+    # Imagen principal
+    if os.path.exists(image_path):
+        img = Image.open(img_6_1)
+        img_resized = img.resize((1000, 1000))  # Redimensionar a 1000x1000
+        st.image(img_resized, use_container_width=False)
+    else:
+        st.error(f"No se encontró la imagen en la ruta: {image_path}")
+
+    st.markdown("")
+    st.markdown("### **Análisis Bivariado** *(numéricas)*")
+    # Construir la ruta absoluta del archivo de imagen
+    img_6_2 = os.path.join(BASE_DIR, "../streamlit/s_6_2.png")
+
+    # Imagen principal
+    if os.path.exists(image_path):
+        img = Image.open(img_6_2)
+        img_resized = img.resize((1000, 1000))  # Redimensionar a 1000x1000
+        st.image(img_resized, use_container_width=False)
+    else:
+        st.error(f"No se encontró la imagen en la ruta: {image_path}")
+
+    st.markdown("")
+    st.markdown("### **Análisis Bivariado** *(categoricas)*")
+    # Construir la ruta absoluta del archivo de imagen
+    img_6_3 = os.path.join(BASE_DIR, "../streamlit/s_6_3.png")
+
+    # Imagen principal
+    if os.path.exists(image_path):
+        img = Image.open(img_6_3)
+        img_resized = img.resize((1000, 1000))  # Redimensionar a 1000x1000
+        st.image(img_resized, use_container_width=False)
+    else:
+        st.error(f"No se encontró la imagen en la ruta: {image_path}")
+
+    st.markdown("")
+    st.markdown("### **Correlación**")
+    # Construir la ruta absoluta del archivo de imagen
+    img_6_4 = os.path.join(BASE_DIR, "../streamlit/s_6_4.png")
+
+    # Imagen principal
+    if os.path.exists(image_path):
+        img = Image.open(img_6_4)
+        img_resized = img.resize((500, 500))  # Redimensionar a 5s00x500
+        st.image(img_resized, use_container_width=False)
+    else:
+        st.error(f"No se encontró la imagen en la ruta: {image_path}")
+
     st.markdown("### Haz clic en el menú lateral para explorar las secciones.")
+
+    st.markdown("**Nota:** *Haz clic en el menú lateral para explorar las secciones.*")
 
 
 # Sección 7: Resultados
