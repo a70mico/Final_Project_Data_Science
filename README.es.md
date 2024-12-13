@@ -142,6 +142,7 @@ class ExampleModel(Base):
 ```bash
   streamlit run src/fp_ds_bank.py
 ```
+También puede ingresar al [LINK](https://bank-marketing-4geeks.streamlit.app/)
 
 ## 📥 Descargar el Modelo
 
