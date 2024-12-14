@@ -102,7 +102,10 @@ st.title("🚀 El Rescate de las Campañas Perdidas")
 with st.expander("Presentación"):
     st.markdown("""
         ### Proyecto Final - Bootcamp Data Science
-        #### Autores: Alejandro Diaz y Rodrigo Pinedo
+        #### Autores: 
+        - Rodrigo Pinedo
+        - Alejandro Diaz
+        #### Mentores:
         **4Geeks Academy**
     """)
 
