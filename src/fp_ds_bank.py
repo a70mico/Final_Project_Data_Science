@@ -185,7 +185,7 @@ if menu == "Inicio":
     # Contenido de la columna derecha
     with col3:
         st.markdown("#### Apoyo de la Ciencia de Datos")
-        st.markdown("- Decisiones basadas en evidencias")
+        st.markdown("- Desarrollo de IA personalizadas")
         st.markdown("- Mayor ventaja competitiva")
         st.markdown("")
         st.markdown("")
@@ -1019,11 +1019,11 @@ elif menu == "9. Predicción":
         st.markdown("")
         st.markdown("")
         st.markdown("""
-            *Este proyecto demostró cómo la combinación de ciencia de datos y Machine
+            Este proyecto demostró cómo la combinación de ciencia de datos y Machine
                      Learning puede transformar un problema tradicionalmente ineficiente 
                     en una solución moderna y escalable. Con este enfoque, el banco no 
                     solo optimiza sus recursos, sino que también posiciona al cliente
-                     en el centro de sus decisiones.*s
+                     en el centro de sus decisiones.
         """)
         st.markdown("")
         st.markdown("")
@@ -1047,6 +1047,13 @@ elif menu == "9. Predicción":
                 file_name="bank_marketing_lgbm_model.joblib",
                 mime="application/octet-stream"
             )
+
+            st.markdown("##### **Son bienvenidas las sugerencias de mejora**")
+            st.markdown("""
+                Pueden acceder a los repositorios de Github para revisar el proyecto:
+                - [**Rodrigo Pinedo**](https://github.com/rodri-iot/Final_Project_Data_Science)
+                - [**Alejandro Diaz**](https://github.com/a70mico/Final_Project_Data_Science)
+            """)
         else:
             st.error("El archivo del modelo no se encontró en la ruta especificada.")
 
